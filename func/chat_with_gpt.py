@@ -9,3 +9,4 @@ def chat_with_gpt(user_input, current_model, client):
     for chunk in stream:
         print(chunk.choices[0].delta.content or "", end="", flush=True) #flush强制刷新输出
     print()
+

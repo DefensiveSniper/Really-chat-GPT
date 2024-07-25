@@ -13,13 +13,13 @@ def read_file(current_model):
     filename = file_folder + input()
     if filename.endswith('.docx') or filename.endswith('.doc'):
         doc = docx.Document(filename)
-        return ' '.join([paragraph.text for paragraph in doc.paragraphs]), True
+        return ' '.join([paragraph.text for paragraph in doc.paragraphs]), False
     elif filename.endswith('.txt'):
         with open(filename, "r", encoding="utf-8") as f:
-            return f.read(), True
+            return f.read(), False
     elif filename.endswith('.xlsx') or filename.endswith('.xls'):
         df = pd.read_excel(filename)
-        return df.to_string(index=False), True
+        return df.to_string(index=False), False
     elif filename.endswith('.pptx'):
         prs = Presentation(filename)
         text = []
@@ -27,20 +27,19 @@ def read_file(current_model):
             for shape in slide.shapes:
                 if hasattr(shape, "text"):
                     text.append(shape.text)
-        return ' '.join(text), True
+        return ' '.join(text), False
     elif filename.endswith('.png') or filename.endswith('jpg'):
-        new_screenshot = True
         with open(filename, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode("utf-8"), True
     else:
         print("目前不支持该文件格式")
-        return "", True
+        return "", False
     
-def file_parse(client, current_model_name):
+def file_parse(current_model_name):
     new_screenshot = False
     file_output, new_screenshot = read_file(current_model_name)
     if file_output == "":
-        return ""
+        return "", ""
     base64_image = ""
     if new_screenshot:
         base64_image = file_output

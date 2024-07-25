@@ -1,6 +1,9 @@
+import pyautogui
 import os
 import time
-import pyautogui
+
+continue_screenshot = False
+screenshot_filename = ""
 
 # 自动截屏
 def auto_capture_screenshots(screenshot_path, screenshot_interval):

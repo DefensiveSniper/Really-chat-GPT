@@ -1,13 +1,12 @@
+from func.audio_play import play_mp3
 import os
 import time
-import pyautogui
 import glob
 import base64
-from func.audio_play import play_mp3
+import pyautogui
 
 # 手动截屏
 def hand_capture_screenshot(screenshot_path):
-    global screenshot_filename
     if not os.path.exists(screenshot_path):
         os.makedirs(screenshot_path)
 
