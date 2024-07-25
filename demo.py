@@ -5,6 +5,8 @@ from func.capture_screenshot import capture_screenshot
 from func.recognize_from_microphone import recognize_from_microphone
 from func.chat_respond import chat_respond
 from func.generate_audio_stream import generate_audio_stream
+from func.generate_audio_stream import stop_audio
+from func.generate_audio_stream import play_audio
 from func.audio_play import play_mp3
 from func.switch_model import switch_model
 from func.read_file import file_parse
@@ -36,6 +38,7 @@ def get_file_content(current_model_name):
     recognized_text, base64_image = file_parse(current_model_name)
 
 def start_voice_recognition(_):
+    stop_audio()
     play_mp3('./audio/success.mp3')
     start_recognition()
 
