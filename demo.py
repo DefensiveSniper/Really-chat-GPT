@@ -1,6 +1,7 @@
 import os
 import keyboard
 from openai import OpenAI
+from func.gpt_model_list import gpt_model_list
 from func.capture_screenshot import capture_screenshot
 from func.recognize_from_microphone import recognize_from_microphone
 from func.chat_respond import chat_respond
@@ -14,9 +15,9 @@ from func.generate_image import generate_image
 # 初始化
 client = OpenAI(api_key = os.environ["OPENAI_API_KEY"])
 screenshot_path = "./screenshots"# 截图保存路径
+model_list = gpt_model_list()
 current_model = "gpt-4o-mini"
 current_model_name = current_model
-model_list = ["gpt-4o-mini","gpt-4o"]# 模型列表，需求更多模型请参考 https://platform.openai.com/docs/models
 recognized_text = ""
 base64_image = "" # 截图的base64编码
 new_screenshot = False
@@ -72,7 +73,7 @@ def switch_model_():
 
 def main():
     # 绑定按键组合
-    keyboard.on_press_key('menu', lambda _: start_voice_recognition())
+    keyboard.on_press_key('menu', start_voice_recognition)
     keyboard.on_release_key('menu', lambda _: stop_voice_recognition(current_model_name, base64_image))
     keyboard.add_hotkey('alt+b', lambda: capture(screenshot_path))
     keyboard.add_hotkey('alt+c', lambda: switch_model_())

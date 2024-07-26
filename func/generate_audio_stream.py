@@ -12,7 +12,7 @@ def generate_audio_stream(response_content):
     global is_playing, playback_thread
     client = openai.OpenAI()
     spoken_response = client.audio.speech.create(
-        model = "tts-1-hd",# 语音模型：tts-1 or tts-1-hd
+        model = "tts-1",# 语音模型：tts-1 or tts-1-hd，中文建议使用tts-1
         voice = "shimmer", # 声音选择：alloy、echo、fable、onyx、nova、shimmer
         response_format = "opus", # 音频格式：opus、aac、flac、pcm、mp3
         input = response_content
