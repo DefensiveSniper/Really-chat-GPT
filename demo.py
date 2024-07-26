@@ -6,7 +6,6 @@ from func.recognize_from_microphone import recognize_from_microphone
 from func.chat_respond import chat_respond
 from func.generate_audio_stream import generate_audio_stream
 from func.generate_audio_stream import stop_audio
-from func.generate_audio_stream import play_audio
 from func.audio_play import play_mp3
 from func.switch_model import switch_model
 from func.read_file import file_parse
@@ -24,6 +23,7 @@ new_screenshot = False
 create_flag = False
 start_recognition, stop_recognition, recognized_text = recognize_from_microphone()
 
+# gpt回复
 def gpt_reply(current_model_name, base64_image):
     global recognized_text, create_flag, client
     if create_flag: # 图片生成
@@ -35,22 +35,24 @@ def gpt_reply(current_model_name, base64_image):
     recognized_text = ""
     base64_image = ""
 
-def get_base64_image(screenshot_path):
+# 获取截图的base64编码
+def capture(screenshot_path):
     global base64_image
     base64_image = capture_screenshot(screenshot_path)
     
+# 解析文件返回文本和base64编码（如果是图片）
 def get_file_content(current_model_name):
     global recognized_text, base64_image
     recognized_text, base64_image = file_parse(current_model_name)
 
+# 开始和停止语音识别
 def start_voice_recognition(_):
-    stop_audio()
+    stop_audio()# 停止播放音频，为了更好的语音识别
     play_mp3('./audio/success.mp3')
     start_recognition()
-
 def stop_voice_recognition(current_model_name, base64_image):
     stop_recognition()
-    global recognized_text, voice_input_received
+    global recognized_text
     exited_text = recognized_text
     recognized_text = recognize_from_microphone()[2]
     if exited_text:
@@ -58,20 +60,34 @@ def stop_voice_recognition(current_model_name, base64_image):
     if recognized_text:
         gpt_reply(current_model_name, base64_image)
 
-def create_image(current_model_name):
-    global recognized_text, create_flag
+def create_image():
+    global recognized_text, create_flag, current_model_name
     create_flag = True
     print(current_model_name + "：请描述你要生成的图片")
+    print(current_model_name + "：等待语音输入...")
 
-# 绑定按键组合
-keyboard.on_press_key('menu', start_voice_recognition)
-keyboard.on_release_key('menu', lambda _: stop_voice_recognition(current_model_name, base64_image))
-keyboard.add_hotkey('alt+b', lambda: get_base64_image(screenshot_path))
-keyboard.add_hotkey('alt+c', lambda: switch_model(model_list, current_model_name))
-keyboard.add_hotkey('alt+r', lambda: get_file_content(current_model_name))
-keyboard.add_hotkey('alt+p', lambda: create_image(current_model_name))
+def switch_model_():
+    global current_model_name
+    current_model_name = switch_model(model_list, current_model_name)
 
-# 保持程序运行
-print(" 'alt+b' 截图，按住 'menu' 键开始语音识别,  'alt+c' 切换模型， 'alt+r' 解析文件， 'esc' 退出")
-keyboard.wait('esc')
-print("程序退出")
+def main():
+    # 绑定按键组合
+    keyboard.on_press_key('menu', lambda _: start_voice_recognition())
+    keyboard.on_release_key('menu', lambda _: stop_voice_recognition(current_model_name, base64_image))
+    keyboard.add_hotkey('alt+b', lambda: capture(screenshot_path))
+    keyboard.add_hotkey('alt+c', lambda: switch_model_())
+    keyboard.add_hotkey('alt+r', lambda: get_file_content(current_model_name))
+    keyboard.add_hotkey('alt+p', lambda: create_image())
+
+    # 提示信息
+    ps = "温馨提示："
+    print(ps + "'alt+b' 截图，'alt+c' 切换模型，'alt+r' 解析文件，'alt+p' 生成图片")
+    print(ps + "按住 'menu' 键开始语音识别, 'esc' 退出")
+    print(ps + "当前模型：" + current_model_name)
+    
+    # 等待退出
+    keyboard.wait('esc')
+    print("程序退出")
+
+if __name__ == "__main__":
+    main()

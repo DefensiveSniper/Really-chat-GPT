@@ -1,7 +1,5 @@
 import azure.cognitiveservices.speech as speechsdk
-from func.generate_audio_stream import generate_audio_stream
 import os
-import keyboard
 
 recognized_text = ""
 recognizer_active = False
@@ -34,6 +32,6 @@ def recognize_from_microphone():
             print("停止语音识别...")
             speech_recognizer.stop_continuous_recognition()
             recognizer_active = False
-    
+
     speech_recognizer.recognized.connect(recognized_handler)# 连接事件处理程序
     return start_recognition, stop_recognition, recognized_text

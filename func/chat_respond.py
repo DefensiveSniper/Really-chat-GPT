@@ -1,5 +1,6 @@
 def chat_respond(client, recognized_text, base64_image, current_model):
     response_content = ""
+    print(current_model + "：", end="")
     if recognized_text and base64_image:
         response = client.chat.completions.create(
             model = current_model,
@@ -36,7 +37,9 @@ def chat_respond(client, recognized_text, base64_image, current_model):
         )
         
         for chunk in response:
-            response_content += chunk.choices[0].delta.content or ""
-            print(chunk.choices[0].delta.content or "", end="", flush=True) #flush强制刷新输出
+            content = chunk.choices[0].delta.content
+            if content is not None:
+                response_content += content
+                print(content, end="", flush=True) #flush强制刷新输出
         print()
         return response_content, client

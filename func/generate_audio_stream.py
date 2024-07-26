@@ -12,17 +12,16 @@ def generate_audio_stream(response_content):
     global is_playing, playback_thread
     client = openai.OpenAI()
     spoken_response = client.audio.speech.create(
-        model="tts-1",
-        voice="shimmer",  # 声音选择
-        response_format="opus",  # 音频格式
-        input=response_content
+        model = "tts-1-hd",# 语音模型：tts-1 or tts-1-hd
+        voice = "shimmer", # 声音选择：alloy、echo、fable、onyx、nova、shimmer
+        response_format = "opus", # 音频格式：opus、aac、flac、pcm、mp3
+        input = response_content
     )
-
+    # 将音频流写入缓冲区，二进制流
     buffer = io.BytesIO()
     for chunk in spoken_response.iter_bytes(chunk_size=4096):
         buffer.write(chunk)
-
-    buffer.seek(0)
+    buffer.seek(0, 0)# 将文件指针移动到文件开头
 
     with sf.SoundFile(buffer, 'r') as sound_file:
         data = sound_file.read(dtype='int16')
@@ -35,7 +34,6 @@ def play_audio(data, samplerate):
     sd.play(data, samplerate)
     sd.wait()#等待音频播放完成
     is_playing = False#设置播放状态为False
-
 def stop_audio():
     global is_playing
     if is_playing:
