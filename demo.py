@@ -41,11 +41,6 @@ def capture(screenshot_path):
     global base64_image
     base64_image = capture_screenshot(screenshot_path)
     
-# 解析文件返回文本和base64编码（如果是图片）
-def get_file_content(current_model_name):
-    global recognized_text, base64_image
-    recognized_text, base64_image = file_parse(current_model_name)
-
 # 开始和停止语音识别
 def start_voice_recognition(_):
     stop_audio()# 停止播放音频，为了更好的语音识别
@@ -61,24 +56,31 @@ def stop_voice_recognition(current_model_name, base64_image):
     if recognized_text:
         gpt_reply(current_model_name, base64_image)
 
-def create_image():
-    global recognized_text, create_flag, current_model_name
-    create_flag = True
-    print(current_model_name + "：请描述你要生成的图片")
-    print(current_model_name + "：等待语音输入...")
 
-def switch_model_():
-    global current_model_name
-    current_model_name = switch_model(model_list, current_model_name)
+# 解析文件返回文本和base64编码（如果是图片）
+# def get_file_content(current_model_name):
+#     global recognized_text, base64_image
+#     recognized_text, base64_image = file_parse(current_model_name)
+
+
+# def create_image():
+#     global recognized_text, create_flag, current_model_name
+#     create_flag = True
+#     print(current_model_name + "：请描述你要生成的图片")
+#     print(current_model_name + "：等待语音输入...")
+
+# def switch_model_():
+#     global current_model_name
+#     current_model_name = switch_model(model_list, current_model_name)
 
 def main():
     # 绑定按键组合
     keyboard.on_press_key('menu', start_voice_recognition)
     keyboard.on_release_key('menu', lambda _: stop_voice_recognition(current_model_name, base64_image))
     keyboard.add_hotkey('alt+b', lambda: capture(screenshot_path))
-    keyboard.add_hotkey('alt+c', lambda: switch_model_())
-    keyboard.add_hotkey('alt+r', lambda: get_file_content(current_model_name))
-    keyboard.add_hotkey('alt+p', lambda: create_image())
+    # keyboard.add_hotkey('alt+c', lambda: switch_model_())
+    # keyboard.add_hotkey('alt+r', lambda: get_file_content(current_model_name))
+    # keyboard.add_hotkey('alt+p', lambda: create_image())
 
     # 提示信息
     ps = "温馨提示："
