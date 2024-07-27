@@ -15,12 +15,12 @@ def recognize_from_microphone():
     def recognized_handler(event):
         global recognized_text, recognizer_active, continue_screenshot
         if event.result.reason == speechsdk.ResultReason.RecognizedSpeech:
-            recognized_text = event.result.text
-            print(f"已识别语音: {recognized_text}")
+            recognized_text += event.result.text
             continue_screenshot = False
-    
+
     def start_recognition():
-        global recognizer_active
+        global recognizer_active, recognized_text
+        recognized_text = ""
         if not recognizer_active:
             print("开始语音识别...")
             speech_recognizer.start_continuous_recognition()

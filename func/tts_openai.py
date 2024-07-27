@@ -13,7 +13,7 @@ def generate_audio_stream(response_content):
     client = openai.OpenAI()
     spoken_response = client.audio.speech.create(
         model = "tts-1",# 语音模型：tts-1 or tts-1-hd，中文建议使用tts-1
-        voice = "shimmer", # 声音选择：alloy、echo、fable、onyx、nova、shimmer
+        voice = "onyx", # 声音选择：alloy、echo、fable、onyx、nova、shimmer
         response_format = "opus", # 音频格式：opus、aac、flac、pcm、mp3
         input = response_content
     )
@@ -26,15 +26,15 @@ def generate_audio_stream(response_content):
     with sf.SoundFile(buffer, 'r') as sound_file:
         data = sound_file.read(dtype='int16')
         is_playing = True
-        playback_thread = threading.Thread(target=play_audio, args=(data, sound_file.samplerate))
+        playback_thread = threading.Thread(target=play_audio_openai, args=(data, sound_file.samplerate))
         playback_thread.start()
 
-def play_audio(data, samplerate):
+def play_audio_openai(data, samplerate):
     global is_playing
     sd.play(data, samplerate)
     sd.wait()#等待音频播放完成
     is_playing = False#设置播放状态为False
-def stop_audio():
+def stop_audio_openai():
     global is_playing
-    if is_playing:
-        sd.stop()
+    is_playing = False
+    sd.stop()
