@@ -12,5 +12,5 @@ Azure语音识别后转文本，文本发送至openai得到response，response�
 5. `menu` - 语音交互
 6. `esc` - 结束程序
 # 使用
-`demo.py`中包含划线功能，但没有讯飞TTS，上述说过偏离主题
-`demo_only_chat.py`为最新更新，支持两种TTS以及**聊天记忆**，并且可以保存聊天内容
+1. `demo.py`中包含划线功能，但没有讯飞TTS，上述说过偏离主题
+2. `demo_only_chat.py`为最新更新，支持两种TTS以及**聊天记忆**，并且可以保存聊天内容
