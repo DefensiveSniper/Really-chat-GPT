@@ -14,9 +14,9 @@ from func.message_json import get_message_json, save_message_json
 
 
 # 讯飞开放平台的APPID、APISecret和APIKey
-APPID = "db64fc0c"
-APISecret = "ZjkwMmJlM2ZlZjkyZTU2MjljNDI3ZDMw"
-APIKey = "49ec9f01839ef80c23e38086f4eeaa29"
+APPID = ""
+APISecret = ""
+APIKey = ""
 
 # 初始化
 client = OpenAI(api_key = os.environ["OPENAI_API_KEY"])
