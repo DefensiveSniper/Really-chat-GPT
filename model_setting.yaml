@@ -1,0 +1,11 @@
+chat_bot: "openai" # 选择对话模型：仅支持openai
+tts_bot: "openai" # 选择TTS模型：openai or xunfei
+
+# openai chat bot setting
+openai_api_key: "" # openai api key
+model: "gpt-4o-mini" # 选择对话模型
+
+# 讯飞tts bot setting，获取方式：https://www.xfyun.cn/
+APPID: ""
+APISecret: ""
+APIKey: ""

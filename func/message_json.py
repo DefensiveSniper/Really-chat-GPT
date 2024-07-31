@@ -3,13 +3,27 @@ import time
 import json
 import glob
 
+screenshot_base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=="
+
 def get_message_json(chathistory_filename, chathistory_path):
     if not os.path.exists(chathistory_path):
         os.makedirs(chathistory_path)
     data = [
-        {"role": "system", "content": "你是一个乐于助人的助手。"},
+        {"role": "system", "content": "你是一个乐于助人的助手，你会通过人类的交流方式来帮助人们，切记不要使用makrdown语法。"},
         {"role": "user", "content": "你好！"},
         {"role": "system", "content": "你好！有什么可以帮助您？"},
+        {"role": "user", "content": [
+            {"type": "text", 
+             "text": "从这张图片中你能获取哪些信息？"
+            },
+            {"type": "image_url",
+             "image_url": {
+                "url": f"data:image/png; base64,{screenshot_base64}",
+                "detail": "high",
+                }
+            }]
+        },
+        {"role": "assistant", "content": "好的，这是我从图片中获取的信息。"},
     ]
     with open(chathistory_filename, 'w') as json_file:
         json.dump(data, json_file)

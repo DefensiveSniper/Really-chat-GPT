@@ -49,7 +49,7 @@ def capture(screenshot_path):
 # 开始和停止语音识别
 def start_voice_recognition(_):
     stop_audio_openai()# 停止播放音频，为了更好的语音识别
-    play_mp3('./audio/success.mp3')
+    play_mp3('./media/success.mp3')
     start_recognition()
 
 def stop_voice_recognition(current_model_name, base64_image):

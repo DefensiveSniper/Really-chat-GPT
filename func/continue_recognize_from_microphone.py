@@ -3,6 +3,7 @@ import os
 import time
 import keyboard
 
+wake_word = "小歪小歪"
 recognized_text = None
 
 def recognize_from_microphone():
@@ -30,9 +31,8 @@ def recognize_from_microphone():
 while True:
     recognize_from_microphone()
     if recognized_text:
-        
-        if recognized_text.startswith("你滚吧"):
-            print("好的，我滚了")
+        if recognized_text.startswith(wake_word):
+            ##############################
             break
         recognized_text = None
     

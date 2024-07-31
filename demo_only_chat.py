@@ -14,9 +14,9 @@ from func.message_json import get_message_json, save_message_json
 
 
 # 讯飞开放平台的APPID、APISecret和APIKey
-APPID = ""
-APISecret = ""
-APIKey = ""
+APPID = "db64fc0c"
+APISecret = "ZjkwMmJlM2ZlZjkyZTU2MjljNDI3ZDMw"
+APIKey = "49ec9f01839ef80c23e38086f4eeaa29"
 
 # 初始化
 client = OpenAI(api_key = os.environ["OPENAI_API_KEY"])
@@ -36,10 +36,10 @@ start_recognition, stop_recognition, recognized_text = recognize_from_microphone
 tts_bot = "openai" # 选择TTS模型：openai or xunfei
 
 # 提示信息
-ps = "温馨提示："
-print(ps + "'alt+b' 截图")
-print(ps + "按住 'menu' 键开始语音识别, 'esc' 退出")
-print(ps + "当前模型：" + current_model_name)
+# ps = "温馨提示："
+# print(ps + "'alt+b' 截图")
+# print(ps + "按住 'menu' 键开始语音识别, 'esc' 退出")
+# print(ps + "当前模型：" + current_model_name)
 
 # TTS模型选择
 def text_to_speech(response):
@@ -70,9 +70,8 @@ def capture(screenshot_path):
     
 # 开始和停止语音识别
 def start_voice_recognition(_):
-    # stop_audio_azure()# 停止播放音频，为了更好的语音识别
     stop_audio()# 停止播放音频，为了更好的语音识别
-    play_mp3('./audio/success.mp3')
+    play_mp3('./media/success.mp3')
     start_recognition()
 def stop_voice_recognition(current_model_name):
     stop_recognition()

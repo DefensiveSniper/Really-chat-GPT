@@ -1,2 +1,2 @@
 @echo off
-python D:\Code\Really-chat-GPT\only_chat_demo.py
+python D:\Code\Really-chat-GPT\demo_only_chat.py
