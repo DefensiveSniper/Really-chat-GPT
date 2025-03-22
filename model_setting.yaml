@@ -6,6 +6,6 @@ openai_api_key: "" # openai api key
 model: "gpt-4o-mini" # 选择对话模型
 
 # 讯飞tts bot setting，获取方式：https://www.xfyun.cn/
-APPID: ""
-APISecret: ""
-APIKey: ""
+APPID: "db64fc0c"
+APISecret: "ZjkwMmJlM2ZlZjkyZTU2MjljNDI3ZDMw"
+APIKey: "49ec9f01839ef80c23e38086f4eeaa29"

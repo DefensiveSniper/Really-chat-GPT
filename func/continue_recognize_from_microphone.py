@@ -27,7 +27,7 @@ def recognize_from_microphone():
     while recognized_text is None:
         time.sleep(0.5)
     
-
+# 唤醒词唤醒，弃用
 while True:
     recognize_from_microphone()
     if recognized_text:

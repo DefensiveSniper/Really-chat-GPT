@@ -3,7 +3,6 @@ import pandas as pd
 import docx
 import base64
 import os
-from func.generate_audio_stream import generate_audio_stream
 
 def read_file(current_model):
     if not os.path.exists('./file'):
@@ -46,5 +45,4 @@ def file_parse(current_model_name):
         file_output = ""
     recognized_text = file_output
     print("请说出你要对这份文档或者图片进行什么操作")
-    generate_audio_stream("请说出你要对这份文档或者图片进行什么操作")
     return recognized_text, base64_image

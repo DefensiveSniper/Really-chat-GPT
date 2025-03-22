@@ -1,13 +1,13 @@
 import json
 
-def chat_respond(client, recognized_text, screenshot_base64, current_model, message):
+def chat_respond(client, recognized_text, screenshot_base64, current_model, message, Temperature, Max_tokens):
     response_content = ""
     print(current_model + "：", end="")
     if recognized_text and screenshot_base64:
         try:
             message.append(
                 {"role": "user", "content": [
-                    {"type": "text", "text": "从这张图片中你能获取哪些信息？"},
+                    {"type": "text", "text": recognized_text},
                     {"type": "image_url", 
                      "image_url": {
                         "url": f"data:image/png;base64,{screenshot_base64}",
@@ -18,7 +18,7 @@ def chat_respond(client, recognized_text, screenshot_base64, current_model, mess
             response = client.chat.completions.create(
                 model = current_model,
                 messages = message,
-                temperature = 0.4, max_tokens=4096,
+                temperature = Temperature, max_tokens=Max_tokens,
                 stream = True,
             )
             for chunk in response:
@@ -37,7 +37,7 @@ def chat_respond(client, recognized_text, screenshot_base64, current_model, mess
             response = client.chat.completions.create(
                 model = current_model,
                 messages = message,
-                temperature = 0.4, max_tokens=4096,
+                temperature = Temperature, max_tokens=Max_tokens,
                 stream = True,
             )
             for chunk in response:

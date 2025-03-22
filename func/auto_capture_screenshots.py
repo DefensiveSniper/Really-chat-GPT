@@ -1,19 +1,25 @@
-import pyautogui
 import os
 import time
+import pyautogui
+import base64
 
-continue_screenshot = False
-screenshot_filename = ""
-
-# 自动截屏
-def auto_capture_screenshots(screenshot_path, screenshot_interval):
-    global continue_screenshot, screenshot_filename
+def auto_capture_screenshots(screenshot_path, screenshot_interval, stop_event, shared_data, lock):
     if not os.path.exists(screenshot_path):
         os.makedirs(screenshot_path)
 
-    while continue_screenshot:
+    while not stop_event.is_set():
         timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
         screenshot_filename = f'{screenshot_path}/{timestamp}.png'
         pyautogui.screenshot().save(screenshot_filename)
-        print(f'截图保存至路径 saved: {screenshot_filename}')
-        time.sleep(screenshot_interval)
+        print(f'自动截图保存至路径: {screenshot_filename}')
+
+        with open(screenshot_filename, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+        with lock:
+            shared_data['base64_image'] = encoded_image
+            print("自动截图 base64_image 已更新")
+
+        stop_event.wait(screenshot_interval)
+
+    print("自动截图线程已退出。")

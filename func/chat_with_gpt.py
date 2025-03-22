@@ -3,7 +3,7 @@ def chat_with_gpt(user_input, current_model, client):
     stream = client.chat.completions.create(
         model = current_model,
         messages = [{"role": "user", "content": user_input}],
-        max_tokens = 4096,
+        max_tokens = 8192,
         stream = True,
     )
     for chunk in stream:

@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import QSize, Qt, QPoint, QTimer
 
-with open("model_setting.yaml", "r") as f:
+with open("model_setting.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
     tts_bot = config["tts_bot"]
     APPID = config["APPID"]
