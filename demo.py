@@ -2,29 +2,34 @@ import os
 import threading
 import keyboard
 import time
+import yaml
 from openai import OpenAI
 from func.gpt_model_list import gpt_model_list
 from func.capture_screenshot import capture_screenshot
 from func.auto_capture_screenshots import auto_capture_screenshots
 from func.recognize_from_microphone import recognize_from_microphone
 from func.chat_respond import chat_respond
-from func.tts_openai import generate_audio_stream, stop_audio_openai
 from func.audio_play import play_mp3
 from func.switch_model import switch_model
 from func.read_file import file_parse
 from func.generate_image import generate_image
 from func.message_json import get_message_json, save_message_json
+from func.tts import text_to_speech, stop_audio
+
+# 加载配置文件
+with open('config.yaml', 'r', encoding='utf-8') as file:
+    config = yaml.safe_load(file)
 
 # 初始化
-client = OpenAI(api_key = os.environ["OPENAI_API_KEY"])
-Temperature = 0.8
-Max_tokens = 4096
-current_model = "gpt-4o-mini"
+model = "gpt-4o-mini"
 prompt = "你是一个私人的AI语音助手，请根据用户给的信息，回答用户的问题。回答要简洁明了，不要重复用户的问题，使用txt格式回答，不得出现其它格式，不得出现其它字符。"
 continue_screenshot = False # 自动截图开关，默认关闭
 screenshot_interval = 5 # 自动截图间隔
+tts_bot = "openai" # 选择TTS模型：openai or xunfei
 #############################################################################################
 #############################################################################################
+openai_api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key']
+client = OpenAI(api_key = openai_api_key)
 screenshot_path = "./screenshots"# 截图保存路径
 chathistory_path = "./chathistory"# 聊天记录保存路径
 timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
@@ -32,10 +37,10 @@ chathistory_filename = f'{chathistory_path}/{timestamp}.json'
 message = get_message_json(chathistory_filename, chathistory_path)
 message.append({"role": "system", "content": prompt})
 model_list = gpt_model_list()
-current_model_name = current_model
+current_model_name = model
 recognized_text = ""
 base64_image = "" # 截图的base64编码
-new_screenshot = False
+
 create_flag = False
 screenshot_thread = None
 shared_data = {'base64_image': None}
@@ -45,13 +50,13 @@ start_recognition, stop_recognition, recognized_text = recognize_from_microphone
 
 # gpt回复
 def gpt_reply(current_model_name, base64_image):
-    global recognized_text, create_flag, client, message
+    global recognized_text, create_flag, message
     if create_flag: # 图片生成
-        generate_image(recognized_text, client, current_model_name)
+        generate_image(recognized_text, current_model_name)
         create_flag = False
         return
-    response, client, message = chat_respond(client, recognized_text, base64_image, current_model_name, message, Temperature, Max_tokens)
-    generate_audio_stream(response)
+    response, message = chat_respond(recognized_text, base64_image, current_model_name, message)
+    text_to_speech(response, tts_bot)
     recognized_text = ""
     base64_image = ""
 
@@ -67,7 +72,7 @@ def capture(screenshot_path):
     
 # 语音识别
 def start_voice_recognition(_):
-    stop_audio_openai()# 停止播放音频，为了更好的语音识别
+    stop_audio(tts_bot)# 停止播放音频，为了更好的语音识别
     play_mp3('./media/success.mp3')
     start_recognition()
 def stop_voice_recognition(current_model_name, base64_image):

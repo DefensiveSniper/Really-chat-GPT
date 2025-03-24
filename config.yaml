@@ -1,0 +1,18 @@
+openai:
+  api_key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  model: gpt-4o-mini
+  temperature: 0.8
+  max_tokens: 4096
+
+xunfei:
+  APPID: 
+  APISecret:
+  APIKey:
+
+deepseek:
+  api_key:
+  model:
+
+azure:
+  SPEECH_KEY:
+  SPEECH_REGION:

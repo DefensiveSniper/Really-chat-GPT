@@ -1,6 +1,17 @@
 import json
+import yaml
+import os
+from openai import OpenAI
 
-def chat_respond(client, recognized_text, screenshot_base64, current_model, message, Temperature, Max_tokens):
+# 加载配置文件
+with open('config.yaml', 'r', encoding='utf-8') as file:
+    config = yaml.safe_load(file)
+
+client = OpenAI(api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key'])
+Temperature = config['openai']['temperature']
+Max_tokens = config['openai']['max_tokens']
+
+def chat_respond(recognized_text, screenshot_base64, current_model, message):
     response_content = ""
     print(current_model + "：", end="")
     if recognized_text and screenshot_base64:
@@ -26,10 +37,10 @@ def chat_respond(client, recognized_text, screenshot_base64, current_model, mess
                 print(chunk.choices[0].delta.content or "", end="", flush=True) #flush强制刷新输出
             print()
             message.append({"role": "assistant", "content": response_content})
-            return response_content, client, message
+            return response_content, message
         except Exception as e:
             print(e)
-            return "抱歉，我无法识别这张图片。", client, message
+            return "抱歉，我无法识别这张图片。", message
     
     if recognized_text:
         try :
@@ -47,10 +58,10 @@ def chat_respond(client, recognized_text, screenshot_base64, current_model, mess
                     print(content, end="", flush=True) #flush强制刷新输出
             print()
             message.append({"role": "assistant", "content": response_content})
-            return response_content, client, message
+            return response_content, message
         except Exception as e:
             print(e)
-            return "抱歉，我无法识别您的语音。", client, message
+            return "抱歉，我无法识别您的语音。", message
 
 def save_chat_history(messages, filename="chat_history.json"):
     with open(filename, "w") as f:

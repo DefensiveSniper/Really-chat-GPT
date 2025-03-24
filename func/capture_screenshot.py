@@ -2,7 +2,6 @@ from func.audio_play import play_mp3
 import pyautogui
 import os
 import time
-import pyautogui
 import base64
 import glob
 

@@ -1,7 +1,6 @@
 import azure.cognitiveservices.speech as speechsdk
 import os
 import time
-import keyboard
 
 wake_word = "小歪小歪"
 recognized_text = None

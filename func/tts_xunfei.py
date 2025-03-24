@@ -12,9 +12,17 @@ import _thread as thread
 import pyaudio
 import io
 import threading
+import yaml
 
 audio_data = io.BytesIO()
 stop_playback = False
+
+with open('config.yaml', 'r', encoding='utf-8') as file:
+    config = yaml.safe_load(file)
+
+APPID = config['xunfei']['APPID']
+APIKey = config['xunfei']['APIKey']
+APISecret = config['xunfei']['APISecret']
 
 class Ws_Param:
     def __init__(self, APPID, APIKey, APISecret, Text):
