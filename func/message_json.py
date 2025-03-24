@@ -14,29 +14,8 @@ screenshot_base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGM
 def get_message_json(chathistory_filename, chathistory_path):
     if not os.path.exists(chathistory_path):
         os.makedirs(chathistory_path)
-    if chat_bot == "openai":
-        data = [
+    data = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "你好！"},
-            {"role": "assistant", "content": "你好！有什么可以帮助您？"},
-            {"role": "user", "content": [
-                {"type": "text", 
-                "text": "从这张图片中你能获取哪些信息？"
-                },
-                {"type": "image_url",
-                "image_url": {
-                    "url": f"data:image/png; base64,{screenshot_base64}",
-                    "detail": "high",
-                    }
-                }]
-            },
-            {"role": "assistant", "content": "好的，这是我从图片中获取的信息。"},
-        ]
-    else:
-        data = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "你好！"},
-            {"role": "assistant", "content": "你好！有什么可以帮助您？"},
         ]
         
     with open(chathistory_filename, 'w') as json_file:

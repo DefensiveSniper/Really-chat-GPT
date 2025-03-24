@@ -32,9 +32,10 @@ def setup_speech_synthesizer_stream():
         subscription=Subscription
     )
     speech_config.speech_synthesis_voice_name = 'zh-CN-XiaoxiaoMultilingualNeural'
+    speech_config.speech_synthesis_rate = "2"
     speech_config.set_property(speechsdk.PropertyId.SpeechSynthesis_FrameTimeoutInterval, "100000000")
     speech_config.set_property(speechsdk.PropertyId.SpeechSynthesis_RtfTimeoutThreshold, "10")
-
+    
     # 这里明确指定默认扬声器输出
     audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
     synthesizer = speechsdk.SpeechSynthesizer(

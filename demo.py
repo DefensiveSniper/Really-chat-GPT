@@ -23,6 +23,7 @@ with open('config.yaml', 'r', encoding='utf-8') as file:
     openai_api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key']
     tts_bot = config['tts_bot']
     model = config['openai']['model'] if config['chat_bot'] == 'openai' else config['deepseek']['model']
+    file.close()
 
 # 初始化
 continue_screenshot = False # 自动截图开关，默认关闭

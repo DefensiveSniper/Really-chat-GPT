@@ -1,6 +1,6 @@
-chat_bot: "deepseek" # 选择对话模型：openai、deepseek
+chat_bot: "openai" # 选择对话模型：openai、deepseek
 tts_bot: "azure" # 选择TTS模型：openai、xunfei、azure
-system_prompt: "你是一个私人的AI语音助手，请根据用户给的信息，回答用户的问题。回答要简洁明了，不要重复用户的问题，使用txt格式回答，不得出现其它格式，不得出现其它字符。"
+system_prompt: "你是一个私人的AI语音助手，请根据用户给的信息，回答用户的问题。回答要简洁明了，不要重复用户的问题，使用txt格式回答，不得出现其它格式，不得出现其它字符，不要分点。"
 
 openai:
   api_key: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -17,7 +17,7 @@ xunfei:
   APIKey: "49ec9f01839ef80c23e38086f4eeaa29"
 
 deepseek:
-  api_key: ""
+  api_key: "sk-70ecd356d7ed465e9237f298cfacb823"
   model: "deepseek-chat" # deepseek-chat是v3模型，deepseek-reasoner是R1模型
   temperature: 0.8
   max_tokens: 4096
