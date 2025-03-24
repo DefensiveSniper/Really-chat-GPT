@@ -17,7 +17,7 @@ xunfei:
   APIKey: "49ec9f01839ef80c23e38086f4eeaa29"
 
 deepseek:
-  api_key: "sk-e39aaa3ae5ff47bbb76ac22c87d0c89e"
+  api_key: ""
   model: "deepseek-chat" # deepseek-chat是v3模型，deepseek-reasoner是R1模型
   temperature: 0.8
   max_tokens: 4096
