@@ -24,15 +24,14 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import QSize, Qt, QPoint, QTimer
 
-with open("model_setting.yaml", "r", encoding="utf-8") as f:
+with open("config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
     tts_bot = config["tts_bot"]
-    APPID = config["APPID"]
-    APISecret = config["APISecret"]
-    APIKey = config["APIKey"]
-    openai_api_key = config["openai_api_key"]
+    APPID = config['xunfei']['APPID']
+    APISecret = config['xunfei']['APISecret']
+    APIKey = config['xunfei']["APIKey"]
+    openai_api_key = config['openai']['api_key']
     current_model = config["model"]
-    f.close()
 
 # 初始化
 client = OpenAI(api_key = os.environ["OPENAI_API_KEY"])

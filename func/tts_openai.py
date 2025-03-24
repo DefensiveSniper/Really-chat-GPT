@@ -1,8 +1,14 @@
 import openai
 import io
+import yaml
 import threading
 import soundfile as sf
 import sounddevice as sd
+
+with open("config.yaml", "r", encoding="utf-8") as file:
+    config = yaml.safe_load(file)
+    tts_model = config['openai']["tts_model"]
+    file.close()
 
 is_playing = False # 播放状态，用于判断是否正在播放音频，并控制音频播放
 playback_thread = None
@@ -12,10 +18,10 @@ def generate_audio_stream(response_content):
     global is_playing, playback_thread
     client = openai.OpenAI()
     spoken_response = client.audio.speech.create(
-        model = "tts-1",# 语音模型：tts-1 or tts-1-hd，中文建议使用tts-1
-        voice = "onyx", # 声音选择：alloy、echo、fable、onyx、nova、shimmer
-        response_format = "opus", # 音频格式：opus、aac、flac、pcm、mp3
-        input = response_content
+        model = config['openai']["tts_model"],
+        voice = config['openai']["tts_voice"],
+        response_format = config['openai']['response_format'], # 音频格式：opus、aac、flac、pcm、mp3
+        input = response_content,
     )
     # 将音频流写入缓冲区，二进制流
     buffer = io.BytesIO()

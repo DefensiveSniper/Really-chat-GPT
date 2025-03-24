@@ -19,6 +19,7 @@ stop_playback = False
 
 with open('config.yaml', 'r', encoding='utf-8') as file:
     config = yaml.safe_load(file)
+    file.close()
 
 APPID = config['xunfei']['APPID']
 APIKey = config['xunfei']['APIKey']
@@ -96,10 +97,10 @@ def play_audio_xunfei(audio_data):
     stream.close()
     p.terminate()
 
-def tts_xunfei(appid, apikey, apisecret, text):
+def tts_xunfei(text):
     global wsParam, audio_data
     audio_data = io.BytesIO()  # 清空音频数据
-    wsParam = Ws_Param(appid, apikey, apisecret, text)
+    wsParam = Ws_Param(APPID, APIKey, APISecret, text)
     websocket.enableTrace(False)
     ws = websocket.WebSocketApp(wsParam.create_url(),
                                 on_message=on_message,

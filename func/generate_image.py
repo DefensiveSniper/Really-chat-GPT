@@ -9,6 +9,7 @@ import yaml
 # 加载配置文件
 with open('config.yaml', 'r', encoding='utf-8') as file:
     config = yaml.safe_load(file)
+    file.close()
 
 client = OpenAI(api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key'])
 

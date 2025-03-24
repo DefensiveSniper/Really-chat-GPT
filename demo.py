@@ -15,27 +15,26 @@ from func.read_file import file_parse
 from func.generate_image import generate_image
 from func.message_json import get_message_json, save_message_json
 from func.tts import text_to_speech, stop_audio
+from func.tts_azure import chat_respond_with_audio
 
 # 加载配置文件
 with open('config.yaml', 'r', encoding='utf-8') as file:
     config = yaml.safe_load(file)
+    openai_api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key']
+    tts_bot = config['tts_bot']
+    model = config['openai']['model'] if config['chat_bot'] == 'openai' else config['deepseek']['model']
 
 # 初始化
-model = "gpt-4o-mini"
-prompt = "你是一个私人的AI语音助手，请根据用户给的信息，回答用户的问题。回答要简洁明了，不要重复用户的问题，使用txt格式回答，不得出现其它格式，不得出现其它字符。"
 continue_screenshot = False # 自动截图开关，默认关闭
 screenshot_interval = 5 # 自动截图间隔
-tts_bot = "openai" # 选择TTS模型：openai or xunfei
 #############################################################################################
 #############################################################################################
-openai_api_key = os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else config['openai']['api_key']
 client = OpenAI(api_key = openai_api_key)
 screenshot_path = "./screenshots"# 截图保存路径
 chathistory_path = "./chathistory"# 聊天记录保存路径
 timestamp = time.strftime('%Y-%m-%d_%H-%M-%S')
 chathistory_filename = f'{chathistory_path}/{timestamp}.json'
 message = get_message_json(chathistory_filename, chathistory_path)
-message.append({"role": "system", "content": prompt})
 model_list = gpt_model_list()
 current_model_name = model
 recognized_text = ""
@@ -52,11 +51,14 @@ start_recognition, stop_recognition, recognized_text = recognize_from_microphone
 def gpt_reply(current_model_name, base64_image):
     global recognized_text, create_flag, message
     if create_flag: # 图片生成
-        generate_image(recognized_text, current_model_name)
+        generate_image(recognized_text)
         create_flag = False
         return
-    response, message = chat_respond(recognized_text, base64_image, current_model_name, message)
-    text_to_speech(response, tts_bot)
+    if tts_bot == "azure":
+        response, message = chat_respond_with_audio(recognized_text, base64_image, current_model_name, message)
+    else:
+        response, message = chat_respond(recognized_text, base64_image, current_model_name, message)
+        text_to_speech(response, tts_bot)
     recognized_text = ""
     base64_image = ""
 
