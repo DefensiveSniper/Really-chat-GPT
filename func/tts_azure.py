@@ -10,6 +10,7 @@ with open('config.yaml', 'r', encoding='utf-8') as f:
     chat_bot = config['chat_bot']
     Subscription = os.environ.get('SPEECH_KEY') if "SPEECH_KEY" in os.environ else config['azure']['SPEECH_KEY']
     Region = os.environ.get('SPEECH_REGION') if "SPEECH_REGION" in os.environ else config['azure']['SPEECH_REGION']
+    voice_name = config['azure']['voice_name']
     f.close()
 
 # setup client
@@ -31,8 +32,7 @@ def setup_speech_synthesizer_stream():
         endpoint=f"wss://{Region}.tts.speech.microsoft.com/cognitiveservices/websocket/v2",
         subscription=Subscription
     )
-    speech_config.speech_synthesis_voice_name = 'zh-CN-XiaoxiaoMultilingualNeural'
-    speech_config.speech_synthesis_rate = "2"
+    speech_config.speech_synthesis_voice_name = voice_name
     speech_config.set_property(speechsdk.PropertyId.SpeechSynthesis_FrameTimeoutInterval, "100000000")
     speech_config.set_property(speechsdk.PropertyId.SpeechSynthesis_RtfTimeoutThreshold, "10")
     
@@ -135,7 +135,7 @@ import keyboard
 
 def listen_keyboard():
     while True:
-        keyboard.wait('`')  # 等待"`"按键按下
+        keyboard.wait('menu')  # 等待"`"按键按下
         interrupt_tts()
 
 # 启动键盘监听线程（程序启动时调用一次即可）

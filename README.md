@@ -3,6 +3,7 @@
 # 原理
 Azure语音识别后转文本，文本发送至AI模型得到response，response交给TTS模型生成音频播放
 目前TTS模型仅有openai、讯飞以及azure
+
 **推荐使用azure的tts，因为可以支持流式合成，即实时合成语音**
 # 功能
 划线部分偏离项目初衷

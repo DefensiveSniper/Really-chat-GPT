@@ -56,7 +56,6 @@ def input_listener():
         user_input_active = True
         user_input_text = input("请输入内容（按回车发送，或使用语音输入）：")
         if user_input_text.strip():  # 如果用户输入了内容
-            print(f"已输入内容: {user_input_text}")
             gpt_reply(current_model_name, base64_image)
 # 语音识别
 def start_voice_recognition(_):
