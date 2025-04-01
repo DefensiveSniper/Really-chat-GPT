@@ -40,7 +40,6 @@ model_list = gpt_model_list()
 current_model_name = model
 recognized_text = ""
 base64_image = "" # 截图的base64编码
-
 create_flag = False
 screenshot_thread = None
 shared_data = {'base64_image': None}
@@ -48,13 +47,48 @@ image_lock = threading.Lock()
 stop_auto_capture_event = threading.Event()
 start_recognition, stop_recognition, recognized_text = recognize_from_microphone()
 
+user_input_active = False
+user_input_text = ""
+# 监听用户的 input 输入
+def input_listener():
+    global user_input_active, user_input_text
+    while True:
+        user_input_active = True
+        user_input_text = input("请输入内容（按回车发送，或使用语音输入）：")
+        if user_input_text.strip():  # 如果用户输入了内容
+            print(f"已输入内容: {user_input_text}")
+            gpt_reply(current_model_name, base64_image)
+# 语音识别
+def start_voice_recognition(_):
+    stop_audio(tts_bot)# 停止播放音频，为了更好的语音识别
+    play_mp3('./media/success.mp3')
+    start_recognition()
+def stop_voice_recognition(current_model_name, base64_image):
+    stop_recognition()
+    global recognized_text, create_flag
+    exited_text = recognized_text
+    recognized_text = recognize_from_microphone()[2]
+    if exited_text:
+        recognized_text += exited_text
+    if recognized_text:
+        print(f"已识别语音: {recognized_text}")
+        gpt_reply(current_model_name, base64_image)
+    create_flag = False
+
 # gpt回复
 def gpt_reply(current_model_name, base64_image):
-    global recognized_text, create_flag, message
+    global recognized_text, create_flag, message, user_input_active, user_input_text
     if create_flag: # 图片生成
         generate_image(recognized_text)
         create_flag = False
         return
+
+    # 优先处理用户 input 输入
+    if user_input_active and user_input_text.strip():
+        recognized_text = user_input_text
+        user_input_active = False  # 重置输入状态
+        user_input_text = ""  # 清空输入内容
+
     if tts_bot == "azure":
         response, message = chat_respond_with_audio(recognized_text, base64_image, current_model_name, message)
     else:
@@ -72,23 +106,6 @@ def capture(screenshot_path):
             shared_data['base64_image'] = encoded_image
             base64_image = encoded_image  # 同步全局变量
             print("手动截图 base64_image 已更新")
-    
-# 语音识别
-def start_voice_recognition(_):
-    stop_audio(tts_bot)# 停止播放音频，为了更好的语音识别
-    play_mp3('./media/success.mp3')
-    start_recognition()
-def stop_voice_recognition(current_model_name, base64_image):
-    stop_recognition()
-    global recognized_text, create_flag
-    exited_text = recognized_text
-    recognized_text = recognize_from_microphone()[2]
-    if exited_text:
-        recognized_text += exited_text
-    if recognized_text:
-        print(f"已识别语音: {recognized_text}")
-        gpt_reply(current_model_name, base64_image)
-    create_flag = False
 
 # 解析文件返回文本和base64编码（如果是图片）
 def get_file_content(current_model_name):
@@ -135,26 +152,25 @@ def sync_base64_image():
         time.sleep(0.1)  # 每隔0.1秒同步一次，频率可自行调整
 
 def main():
+    # 提示信息
+    ps = "温馨提示："
+    print(ps + "按下 'alt+a' 可切换自动截图的启动与停止")
+    print(ps + "'alt+b' 截图，'alt+c' 切换模型，'alt+r' 解析文件，'alt+p' 生成图片")
+    print(ps + "按住 'menu' 键开始语音识别, 'esc' 退出")
+    print(ps + "当前模型：" + current_model_name)
     threading.Thread(target=sync_base64_image, daemon=True).start()
+    threading.Thread(target=input_listener, daemon=True).start()  # 启动 input 监听线程
     # 绑定按键组合
-    keyboard.on_press_key('`', start_voice_recognition)
-    keyboard.on_release_key('`', lambda _: stop_voice_recognition(current_model_name, base64_image))
+    keyboard.on_press_key('menu', start_voice_recognition)
+    keyboard.on_release_key('menu', lambda _: stop_voice_recognition(current_model_name, base64_image))
     keyboard.add_hotkey('alt+a', switch_continue_screenshot)
     keyboard.add_hotkey('alt+b', lambda: capture(screenshot_path))
     keyboard.add_hotkey('alt+c', lambda: switch_model_())
     keyboard.add_hotkey('alt+r', lambda: get_file_content(current_model_name))
     keyboard.add_hotkey('alt+p', lambda: create_image())
-    # 提示信息
-    ps = "温馨提示："
-    print(ps + "按下 'alt+a' 可切换自动截图的启动与停止")
-    print(ps + "'alt+b' 截图，'alt+c' 切换模型，'alt+r' 解析文件，'alt+p' 生成图片")
-    print(ps + "按住 '`' 键开始语音识别, 'esc' 退出")
-    print(ps + "当前模型：" + current_model_name)
-
     # 等待退出
     keyboard.wait('esc')
     save_message_json(chathistory_filename, message)
-    
     
 if __name__ == "__main__":
     main()

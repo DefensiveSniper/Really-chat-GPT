@@ -66,8 +66,8 @@ def tts_stream_worker(text_queue):
 
     if result.reason == speechsdk.ResultReason.Canceled:
         print("[TTS Canceled]")
-    else:
-        print("[TTS Finished]")
+    # else:
+    #     print("[TTS Finished]")
 
     tts_running = False
 

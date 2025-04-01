@@ -22,7 +22,7 @@ def recognize_from_microphone():
         global recognizer_active, recognized_text
         recognized_text = ""
         if not recognizer_active:
-            print("开始语音识别...")
+            print("\n开始语音识别...")
             speech_recognizer.start_continuous_recognition()
             recognizer_active = True
 
